@@ -1,0 +1,55 @@
+package com.miage.dao.impl;
+
+import java.util.List;
+
+import javax.ejb.Stateful;
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
+
+import com.miage.dao.IUtilisateurDAO;
+import com.miage.entity.Utilisateur;
+
+/**
+ * Classe DAO pour les utilisateurs
+ * @author tarik
+ * @author Eric
+ */
+@Stateful
+public class UtilisateurDAO implements IUtilisateurDAO {
+	
+	@PersistenceContext
+	protected EntityManager entityManager;
+
+	@Override
+	public Utilisateur findById(String idNom) {
+		final Utilisateur result = entityManager.find(Utilisateur.class, idNom);
+		return result;
+	}
+	
+
+	@Override
+	public void delete(Utilisateur entity) {
+		Utilisateur attached = entityManager.merge(entity);
+		entityManager.remove(attached);
+	}
+
+	@Override
+	public Utilisateur save(Utilisateur entity) {
+		final Utilisateur savedUtilisateurEntity = entityManager.merge(entity);
+		return savedUtilisateurEntity;
+	}
+	
+
+	@Override
+	@SuppressWarnings("unchecked")
+	public List<Utilisateur> findAll() {
+		return entityManager
+				.createQuery("select u from Utilisateur u")
+				.getResultList();
+	}
+
+	@Override
+	public int countAll() {
+		return findAll().size() ; 
+	}
+}
